@@ -2999,142 +2999,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Switch:SW_SPST"
-			(pin_names
-				(offset 0)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "SW"
-				(at 0 3.175 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "SW_SPST"
-				(at 0 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Single Pole Single Throw (SPST) switch"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "switch lever"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "SW_SPST_0_0"
-				(circle
-					(center -2.032 0)
-					(radius 0.508)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.524 0.254) (xy 1.524 1.778)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 2.032 0)
-					(radius 0.508)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "SW_SPST_1_1"
-				(pin passive line
-					(at -5.08 0 0)
-					(length 2.54)
-					(name "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5.08 0 180)
-					(length 2.54)
-					(name "B"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "power:+12V"
 			(power)
 			(pin_numbers
@@ -4075,16 +3939,6 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 52.07) (xy 74.93 52.07)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1538ed5f-689f-48c5-b0c5-0acf2be39dca")
-	)
-	(wire
-		(pts
 			(xy 96.52 36.83) (xy 96.52 39.37)
 		)
 		(stroke
@@ -4212,6 +4066,16 @@
 			(type default)
 		)
 		(uuid "325f5a28-74ad-451e-bb43-1301dee94096")
+	)
+	(wire
+		(pts
+			(xy 68.58 49.53) (xy 68.58 52.07)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "39b99d8f-44f9-431c-a22e-1a149991e8f9")
 	)
 	(wire
 		(pts
@@ -4405,6 +4269,16 @@
 	)
 	(wire
 		(pts
+			(xy 68.58 52.07) (xy 74.93 52.07)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "58d3bb6b-77d0-4d58-983d-fa9c7fac2410")
+	)
+	(wire
+		(pts
 			(xy 62.23 134.62) (xy 64.77 134.62)
 		)
 		(stroke
@@ -4542,6 +4416,16 @@
 			(type default)
 		)
 		(uuid "7bf33d6d-767d-4c66-b08f-1869261c3f16")
+	)
+	(wire
+		(pts
+			(xy 77.47 52.07) (xy 74.93 52.07)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7d8bac58-bbe5-4002-88d0-9101a72eff5c")
 	)
 	(wire
 		(pts
@@ -4712,16 +4596,6 @@
 			(type default)
 		)
 		(uuid "b25772dd-2b29-4234-8972-fd394597570b")
-	)
-	(wire
-		(pts
-			(xy 74.93 49.53) (xy 74.93 52.07)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b3578176-03e8-4a1e-8df3-70a8fab445b9")
 	)
 	(wire
 		(pts
@@ -5035,7 +4909,7 @@
 	)
 	(wire
 		(pts
-			(xy 59.69 52.07) (xy 62.23 52.07)
+			(xy 59.69 52.07) (xy 66.04 52.07)
 		)
 		(stroke
 			(width 0)
@@ -5092,6 +4966,16 @@
 			(type default)
 		)
 		(uuid "f043415d-1148-4884-b275-9350a3045733")
+	)
+	(wire
+		(pts
+			(xy 66.04 49.53) (xy 66.04 52.07)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f7485f4b-94b8-4524-ad85-b2590baffbed")
 	)
 	(wire
 		(pts
@@ -6049,7 +5933,7 @@
 				)
 			)
 		)
-		(property "Value" "Screw_Terminal_01x02"
+		(property "Value" "DC_In_Screw"
 			(at 30.48 66.04 0)
 			(effects
 				(font
@@ -7457,6 +7341,76 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector:Screw_Terminal_01x02")
+		(at 66.04 44.45 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "4b73a18d-ee37-4f6a-b9bc-e9d74b8df932")
+		(property "Reference" "J4"
+			(at 71.12 43.1799 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "ESTOP"
+			(at 71.12 45.7199 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 66.04 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 66.04 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic screw terminal, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 66.04 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "3b4397a1-d15d-426d-b5da-d30b6bcaeeb1")
+		)
+		(pin "1"
+			(uuid "9e38179f-08a9-4f8c-8f79-949829856d09")
+		)
+		(instances
+			(project ""
+				(path "/871cf238-4ac7-4d02-abe8-ea643d22c598"
+					(reference "J4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R")
 		(at 102.87 38.1 0)
 		(unit 1)
@@ -8000,7 +7954,7 @@
 	)
 	(symbol
 		(lib_id "power:+12V")
-		(at 74.93 49.53 0)
+		(at 77.47 52.07 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8009,7 +7963,7 @@
 		(fields_autoplaced yes)
 		(uuid "74087a4e-fda4-4a7c-ad1c-cd613240f7d4")
 		(property "Reference" "#PWR03"
-			(at 74.93 53.34 0)
+			(at 73.66 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8018,15 +7972,16 @@
 			)
 		)
 		(property "Value" "+12V"
-			(at 74.93 44.45 0)
+			(at 81.28 52.0699 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
 		(property "Footprint" ""
-			(at 74.93 49.53 0)
+			(at 77.47 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8035,7 +7990,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 74.93 49.53 0)
+			(at 77.47 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8044,7 +7999,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+12V\""
-			(at 74.93 49.53 0)
+			(at 77.47 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8967,74 +8922,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Switch:SW_SPST")
-		(at 67.31 52.07 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "8fdbd2fe-4b8a-49ac-93f5-fa85c3f469b0")
-		(property "Reference" "SW1"
-			(at 67.31 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "SW_ESTOP"
-			(at 67.31 48.26 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 67.31 52.07 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 67.31 52.07 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Single Pole Single Throw (SPST) switch"
-			(at 67.31 52.07 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "8799085f-2e61-438e-ad12-f338c5538aa4")
-		)
-		(pin "1"
-			(uuid "216cbf4e-18ae-4abc-877d-1bd87dc4695d")
-		)
-		(instances
-			(project ""
-				(path "/871cf238-4ac7-4d02-abe8-ea643d22c598"
-					(reference "SW1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C_Polarized")
 		(at 96.52 71.12 0)
 		(unit 1)
@@ -9678,7 +9565,7 @@
 				)
 			)
 		)
-		(property "Value" "Barrel_Jack"
+		(property "Value" "DC_In_Barrel"
 			(at 34.29 40.64 0)
 			(effects
 				(font
