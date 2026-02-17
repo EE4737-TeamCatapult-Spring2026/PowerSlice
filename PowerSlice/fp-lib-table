@@ -4,4 +4,5 @@
   (lib (name "INA214BIDCKR")(type "KiCad")(uri "${KIPRJMOD}/INA214BIDCKR/KiCADv6/footprints.pretty")(options "")(descr ""))
   (lib (name "NUCLEO_F303K8")(type "KiCad")(uri "${KIPRJMOD}/NUCLEO_F303K8")(options "")(descr ""))
   (lib (name "03540101ZXGY")(type "KiCad")(uri "${KIPRJMOD}/03540101ZXGY/KiCADv6/footprints.pretty")(options "")(descr ""))
+  (lib (name "691137710002")(type "KiCad")(uri "${KIPRJMOD}/691137710002")(options "")(descr ""))
 )
