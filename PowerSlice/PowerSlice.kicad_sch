@@ -3678,12 +3678,6 @@
 		(uuid "2c72afab-1d7b-47fe-9132-656f43308bb2")
 	)
 	(junction
-		(at 250.19 43.18)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "36932b72-48d5-4c11-b347-886c7fb32052")
-	)
-	(junction
 		(at 62.23 134.62)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3929,16 +3923,6 @@
 	)
 	(wire
 		(pts
-			(xy 250.19 31.75) (xy 250.19 34.29)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "09aeb1e6-e402-417c-b7c6-b23db0cdfdcc")
-	)
-	(wire
-		(pts
 			(xy 62.23 121.92) (xy 62.23 124.46)
 		)
 		(stroke
@@ -4016,16 +4000,6 @@
 			(type default)
 		)
 		(uuid "11b4a8c1-6277-49bd-bb7f-447595a00aa4")
-	)
-	(wire
-		(pts
-			(xy 250.19 43.18) (xy 252.73 43.18)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1343d44c-740a-48d5-bd09-ea0aa1ac054d")
 	)
 	(wire
 		(pts
@@ -4869,16 +4843,6 @@
 	)
 	(wire
 		(pts
-			(xy 250.19 43.18) (xy 250.19 41.91)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d0e0b246-10e9-4acd-bb26-0aaf20e5d820")
-	)
-	(wire
-		(pts
 			(xy 59.69 147.32) (xy 62.23 147.32)
 		)
 		(stroke
@@ -5583,7 +5547,7 @@
 	)
 	(global_label "RESET"
 		(shape input)
-		(at 252.73 43.18 0)
+		(at 250.19 43.18 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -5593,7 +5557,7 @@
 		)
 		(uuid "9c1da266-c775-4062-b555-eb1604106033")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 261.4603 43.18 0)
+			(at 258.9203 43.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6267,76 +6231,6 @@
 			(project "PowerSlice"
 				(path "/871cf238-4ac7-4d02-abe8-ea643d22c598"
 					(reference "#PWR013")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 250.19 38.1 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "207557f0-b642-4bb0-8264-34ebb9878386")
-		(property "Reference" "R12"
-			(at 252.73 36.8299 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "100k"
-			(at 252.73 39.3699 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder"
-			(at 248.412 38.1 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 250.19 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 250.19 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "f95988f1-0181-4e25-9d53-2860d2ac0b23")
-		)
-		(pin "1"
-			(uuid "d7f86bc4-5b86-47c2-ba86-a4519e6ec769")
-		)
-		(instances
-			(project ""
-				(path "/871cf238-4ac7-4d02-abe8-ea643d22c598"
-					(reference "R12")
 					(unit 1)
 				)
 			)
@@ -8172,72 +8066,6 @@
 			(project ""
 				(path "/871cf238-4ac7-4d02-abe8-ea643d22c598"
 					(reference "#PWR03")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+3V3")
-		(at 250.19 31.75 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "75432712-2acf-4225-9460-f6f96e8076a1")
-		(property "Reference" "#PWR033"
-			(at 250.19 35.56 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3V3"
-			(at 250.19 26.67 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 250.19 31.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 250.19 31.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+3V3\""
-			(at 250.19 31.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "5623a756-2f79-4d93-8a40-22b858191001")
-		)
-		(instances
-			(project ""
-				(path "/871cf238-4ac7-4d02-abe8-ea643d22c598"
-					(reference "#PWR033")
 					(unit 1)
 				)
 			)
