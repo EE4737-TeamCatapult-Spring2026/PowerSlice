@@ -43,6 +43,7 @@ struct current_data
 #define STATUS_BUSY	0x2
 #define STATUS_ERROR 0x3
 #define MASTER_ADDR 0x00
+#define ADC_SAMPLE_COUNT 3
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -62,6 +63,7 @@ TIM_HandleTypeDef htim1;
 
 /* USER CODE BEGIN PV */
 uint16_t adc_buf[ADC_SAMPLE_COUNT];
+int isADCFinished = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,9 +108,8 @@ int main(void)
   uint32_t voltage12V = 0;
   struct current_data sensor_data;
   int count = 0;
-  int isADCFinished = 0;
-  uint16_t ADC1_VAL[ADC_CH];
-  uint16_t ADC2_VAL[ADC_CH];
+  uint32_t ADC1_VAL[ADC_CH];
+  uint32_t ADC2_VAL[ADC_CH];
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -139,13 +140,13 @@ int main(void)
 	  if (isADCFinished == 1)
 	  {
 	  	  // Process data
-		  sensor_data->current12V = ADC1_VAL[0];
-		  sensor_data->current5V = ADC1_VAL[1];
-		  sensor_data->current3V3 = ADC1_VAL[2];
-		  sensor_data->status = STATUS_BUSY;
-		  if (ADC1_VAL[0] == 0 || ADC1_VAL[1] == 0|| ADC1_VAL[2] == 0)
+		  sensor_data.current12V = ADC1_VAL[0];
+		  sensor_data.current5V = ADC1_VAL[1];
+		  sensor_data.current3V3 = ADC1_VAL[2];
+		  sensor_data.status = STATUS_BUSY;
+		  if (ADC1_VAL[0] == 0 || ADC1_VAL[1] == 0 || ADC1_VAL[2] == 0)
 		  {
-			  sensor_data->status = STATUS_ERROR;
+			  sensor_data.status = STATUS_ERROR;
 		  }
 		  isADCFinished = 0;
 	  	  HAL_ADC_Start_DMA(&hadc1, ADC1_VAL, ADC_CH);
@@ -154,7 +155,7 @@ int main(void)
 	  // If 10 seconds has elapsed, send data to loaf
 	  if (count == 20)
 	  {
-		sensor_data->status = STATUS_OK;
+		sensor_data.status = STATUS_OK;
 	  }
     /* USER CODE END WHILE */
 
