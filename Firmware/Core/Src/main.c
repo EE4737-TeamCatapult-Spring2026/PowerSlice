@@ -59,6 +59,7 @@ I2C_HandleTypeDef hi2c1;
 TIM_HandleTypeDef htim1;
 
 /* USER CODE BEGIN PV */
+uint8_t RX_Buffer [1];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -228,6 +229,9 @@ int main(void)
     HAL_ADC_Stop(&hadc1);
     return adcval;
   }
+
+  HAL_I2C_Slave_Receive_IT(&hi2c1 ,(uint8_t *)RX_Buffer, 1); //Receiving in Interrupt mode
+  HAL_Delay(100);
   /* USER CODE END 2 */
 
   /* Infinite loop */
