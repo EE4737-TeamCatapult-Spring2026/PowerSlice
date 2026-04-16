@@ -41,7 +41,8 @@ struct current_data
 #define STATUS_OK 0x1
 #define STATUS_BUSY	0x2
 #define STATUS_ERROR 0x3
-#define MASTER_ADDR 0x00
+#define MASTER_ADDR 0x00 << 1
+#define SLAVE_ADDR 0x40 << 1
 #define POLL_TIME 1000
 /* USER CODE END PD */
 
@@ -59,7 +60,10 @@ I2C_HandleTypeDef hi2c1;
 TIM_HandleTypeDef htim1;
 
 /* USER CODE BEGIN PV */
-uint8_t RX_Buffer [1];
+uint8_t rxByte;
+uint8_t txBuffer[4];
+uint8_t txLen = 0;
+uint8_t commandReady = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -230,35 +234,61 @@ int main(void)
     return adcval;
   }
 
-  HAL_I2C_Slave_Receive_IT(&hi2c1 ,(uint8_t *)RX_Buffer, 1); //Receiving in Interrupt mode
-  HAL_Delay(100);
+  HAL_I2C_EnableListen_IT(&hi2c1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  count++;
-	  HAL_Delay(500);
-	  	  // Process data
-	  sensor_data.current12V = ADC_Convert_12V_Current();
-	  sensor_data.current5V = ADC_Convert_5V_Current();
-	  sensor_data.current3V3 = ADC_Convert_3V3_Current();
-	  sensor_data.status = STATUS_BUSY;
-	  if (sensor_data.current12V == 0 || sensor_data.current5V == 0 || sensor_data.current3V3 == 0)
+	  if (commandReady)
 	  {
-		  sensor_data.status = STATUS_ERROR;
+		  commandReady = 0; // Reset flag
+		  switch (rxByte)
+		  {
+		  	  case 0x01:	// Loaf is requesting status
+				  if (sensor_data.current12V == 0 || sensor_data.current5V == 0 || sensor_data.current3V3 == 0)
+				  {
+					  sensor_data.status = STATUS_ERROR;
+				  }
+				  else
+				  {
+					  sensor_data.status = STATUS_OK;
+				  }
+				  txBuffer[0] = sensor_data.status;
+				  txLen = 1;
+				  break;
+
+		  	  case 0x02:	// Loaf is requesting 3V3 current draw
+		  		  sensor_data.current3V3 = ADC_Convert_3V3_Current();
+		  		  txBuffer[0] = (sensor_data.current3V3 >> 0) & 0xFF;
+		  		  txBuffer[1] = (sensor_data.current3V3 >> 8) & 0xFF;
+		  		  txBuffer[2] = (sensor_data.current3V3 >> 16) & 0xFF;
+		  		  txBuffer[3] = (sensor_data.current3V3 >> 24) & 0xFF;
+		  		  txLen = 4;
+		  		  break;
+		  	  case 0x03:	// Loaf is requesting 5V current draw
+		  		  sensor_data.current5V = ADC_Convert_5V_Current();
+		  		  txBuffer[0] = (sensor_data.current5V >> 0) & 0xFF;
+				  txBuffer[1] = (sensor_data.current5V >> 8) & 0xFF;
+				  txBuffer[2] = (sensor_data.current5V >> 16) & 0xFF;
+				  txBuffer[3] = (sensor_data.current5V >> 24) & 0xFF;
+				  txLen = 4;
+		  		  break;
+		  	  case 0x04:	// Loaf is requesting 12V current draw
+		  		  sensor_data.current12V = ADC_Convert_12V_Current();
+		  		  txBuffer[0] = (sensor_data.current12V >> 0) & 0xFF;
+				  txBuffer[1] = (sensor_data.current12V >> 8) & 0xFF;
+				  txBuffer[2] = (sensor_data.current12V >> 16) & 0xFF;
+				  txBuffer[3] = (sensor_data.current12V >> 24) & 0xFF;
+				  txLen = 4;
+		  		  break;
+
 	  }
 	  voltage12V = ADC_Convert_12V();
 	  voltage5V = ADC_Convert_5V();
 	  voltage3V3 = ADC_Convert_3V3();
-	  // If 10 seconds has elapsed, send data to loaf
-	  if (count == 20)
-	  {
-		sensor_data.status = STATUS_OK;
-	  }
     /* USER CODE END WHILE */
-
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -568,8 +598,44 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_I2C_AddrCallback(I2C_HandleTypeDef *hi2c, uint8_t TransferDirection, uint16_t AddrMatchCode)
+{
+    if (hi2c->Instance == I2C1)
+    {
+        if (TransferDirection == I2C_DIRECTION_TRANSMIT) // Master wants to write to slave
+        {
+            HAL_I2C_Slave_Receive_IT(hi2c, &rxByte, 1);
+        }
+        else	// Master wants to read from slave
+        {
+            HAL_I2C_Slave_Transmit_IT(hi2c, txBuffer, txLen);
+        }
+    }
+}
 
+void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+    if (hi2c->Instance == I2C1)
+    {
+        commandReady = 1;
+    }
+}
 
+void HAL_I2C_SlaveTxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+    if (hi2c->Instance == I2C1)
+    {
+        // Do nothing :)
+    }
+}
+
+void HAL_I2C_ListenCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+    if (hi2c->Instance == I2C1)
+    {
+        HAL_I2C_EnableListen_IT(hi2c);	// Listen again
+    }
+}
 /* USER CODE END 4 */
 
 /**
