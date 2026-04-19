@@ -241,9 +241,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  sensor_data.current12V = ADC_Convert_12V_Current();
-	  sensor_data.current5V = ADC_Convert_5V_Current();
-	  sensor_data.current3V3 = ADC_Convert_3V3_Current();
 	  voltage12V = ADC_Convert_12V();
 	  voltage5V = ADC_Convert_5V();
 	  voltage3V3 = ADC_Convert_3V3();
