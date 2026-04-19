@@ -244,13 +244,16 @@ int main(void)
 	  sensor_data.current12V = ADC_Convert_12V_Current();
 	  sensor_data.current5V = ADC_Convert_5V_Current();
 	  sensor_data.current3V3 = ADC_Convert_3V3_Current();
+	  voltage12V = ADC_Convert_12V();
+	  voltage5V = ADC_Convert_5V();
+	  voltage3V3 = ADC_Convert_3V3();
 	  if (commandReady)
 	  {
 		  commandReady = 0; // Reset flag
 		  switch (rxByte)
 		  {
 		  	  case 0x01:	// Loaf is requesting status
-				  if (sensor_data.current12V == 0 || sensor_data.current5V == 0 || sensor_data.current3V3 == 0)
+				  if (voltage12V < 500 || voltage5V < 500 || voltage3V3 < 500)
 				  {
 					  sensor_data.status = STATUS_ERROR;
 				  }
@@ -288,9 +291,6 @@ int main(void)
 		  		  break;
 		  }
 	  }
-	  voltage12V = ADC_Convert_12V();
-	  voltage5V = ADC_Convert_5V();
-	  voltage3V3 = ADC_Convert_3V3();
     /* USER CODE END WHILE */
     /* USER CODE BEGIN 3 */
   }
