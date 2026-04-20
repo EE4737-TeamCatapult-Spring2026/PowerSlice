@@ -29,10 +29,13 @@
 /* USER CODE BEGIN PTD */
 struct current_data
 {
-  uint16_t current12V;
-  uint16_t current5V;
-  uint16_t current3V3;
+  uint32_t current12V;
+  uint32_t current5V;
+  uint32_t current3V3;
   uint8_t status;
+  uint32_t count3V3;
+  uint32_t count5V;
+  uint32_t count12V;
 };
 /* USER CODE END PTD */
 
@@ -43,7 +46,7 @@ struct current_data
 #define STATUS_ERROR 0x3
 #define MASTER_ADDR 0x00 << 1
 #define SLAVE_ADDR 0x40 << 1
-#define POLL_TIME 1000
+#define POLL_TIME 100
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -60,10 +63,14 @@ I2C_HandleTypeDef hi2c1;
 TIM_HandleTypeDef htim1;
 
 /* USER CODE BEGIN PV */
-uint8_t rxByte;
-uint8_t txBuffer[4];
+uint8_t rxData[1] = {0x0};
+uint8_t txData[4] = {0x0, 0x0, 0x0, 0x0};
 uint8_t txLen = 0;
 uint8_t commandReady = 0;
+uint16_t voltage3V3 = 0;
+uint16_t voltage5V = 0;
+uint16_t voltage12V = 0;
+struct current_data sensor_data;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -79,48 +86,12 @@ static void MX_TIM1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+uint16_t ADC_to_mA(uint16_t val)
+  {
+	  return ((-805*val)/1000) + 3298;
+  }
 
-/* USER CODE END 0 */
-
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
-int main(void)
-{
-
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
-  /* MCU Configuration--------------------------------------------------------*/
-
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
-
-  /* USER CODE BEGIN Init */
-  uint16_t voltage3V3 = 0;
-  uint16_t voltage5V = 0;
-  uint16_t voltage12V = 0;
-  struct current_data sensor_data;
-  int count = 0;
-  /* USER CODE END Init */
-
-  /* Configure the system clock */
-  SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_ADC1_Init();
-  MX_ADC2_Init();
-  MX_I2C1_Init();
-  MX_TIM1_Init();
-  /* USER CODE BEGIN 2 */
-  uint16_t ADC_Convert_3V3(void)
+uint16_t ADC_Convert_3V3(void)
   {
     /* Configure channel */
     ADC_ChannelConfTypeDef sConfig = {0};
@@ -193,7 +164,7 @@ int main(void)
     HAL_ADC_PollForConversion(&hadc1, POLL_TIME);
     uint16_t adcval = HAL_ADC_GetValue(&hadc1);
     HAL_ADC_Stop(&hadc1);
-    return adcval;
+    return ADC_to_mA(adcval);
   }
 
   uint16_t ADC_Convert_5V_Current(void)
@@ -212,7 +183,7 @@ int main(void)
     HAL_ADC_PollForConversion(&hadc1, POLL_TIME);
     uint16_t adcval = HAL_ADC_GetValue(&hadc1);
     HAL_ADC_Stop(&hadc1);
-    return adcval;
+    return ADC_to_mA(adcval);
   }
 
   uint16_t ADC_Convert_12V_Current(void)
@@ -231,10 +202,46 @@ int main(void)
     HAL_ADC_PollForConversion(&hadc1, POLL_TIME);
     uint16_t adcval = HAL_ADC_GetValue(&hadc1);
     HAL_ADC_Stop(&hadc1);
-    return adcval;
+    return ADC_to_mA(adcval);
   }
 
-  HAL_I2C_EnableListen_IT(&hi2c1);
+/* USER CODE END 0 */
+
+/**
+  * @brief  The application entry point.
+  * @retval int
+  */
+int main(void)
+{
+
+  /* USER CODE BEGIN 1 */
+
+  /* USER CODE END 1 */
+
+  /* MCU Configuration--------------------------------------------------------*/
+
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_ADC1_Init();
+  MX_ADC2_Init();
+  MX_I2C1_Init();
+  MX_TIM1_Init();
+  /* USER CODE BEGIN 2 */
+  HAL_I2C_Slave_Receive_IT(&hi2c1, rxData, 1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -244,50 +251,13 @@ int main(void)
 	  voltage12V = ADC_Convert_12V();
 	  voltage5V = ADC_Convert_5V();
 	  voltage3V3 = ADC_Convert_3V3();
-	  if (commandReady)
-	  {
-		  commandReady = 0; // Reset flag
-		  switch (rxByte)
-		  {
-		  	  case 0x01:	// Loaf is requesting status
-				  if (voltage12V < 500 || voltage5V < 500 || voltage3V3 < 500)
-				  {
-					  sensor_data.status = STATUS_ERROR;
-				  }
-				  else
-				  {
-					  sensor_data.status = STATUS_OK;
-				  }
-				  txBuffer[0] = sensor_data.status;
-				  txLen = 1;
-				  break;
-
-		  	  case 0x02:	// Loaf is requesting 3V3 current draw
-		  		  sensor_data.current3V3 = ADC_Convert_3V3_Current();
-		  		  txBuffer[0] = (sensor_data.current3V3 >> 0) & 0xFF;
-		  		  txBuffer[1] = (sensor_data.current3V3 >> 8) & 0xFF;
-		  		  txBuffer[2] = (sensor_data.current3V3 >> 16) & 0xFF;
-		  		  txBuffer[3] = (sensor_data.current3V3 >> 24) & 0xFF;
-		  		  txLen = 4;
-		  		  break;
-		  	  case 0x03:	// Loaf is requesting 5V current draw
-		  		  sensor_data.current5V = ADC_Convert_5V_Current();
-		  		  txBuffer[0] = (sensor_data.current5V >> 0) & 0xFF;
-				  txBuffer[1] = (sensor_data.current5V >> 8) & 0xFF;
-				  txBuffer[2] = (sensor_data.current5V >> 16) & 0xFF;
-				  txBuffer[3] = (sensor_data.current5V >> 24) & 0xFF;
-				  txLen = 4;
-		  		  break;
-		  	  case 0x04:	// Loaf is requesting 12V current draw
-		  		  sensor_data.current12V = ADC_Convert_12V_Current();
-		  		  txBuffer[0] = (sensor_data.current12V >> 0) & 0xFF;
-				  txBuffer[1] = (sensor_data.current12V >> 8) & 0xFF;
-				  txBuffer[2] = (sensor_data.current12V >> 16) & 0xFF;
-				  txBuffer[3] = (sensor_data.current12V >> 24) & 0xFF;
-				  txLen = 4;
-		  		  break;
-		  }
-	  }
+	  sensor_data.current12V += ADC_Convert_12V_Current();
+	  sensor_data.count12V++;
+	  sensor_data.current5V += ADC_Convert_5V_Current();
+	  sensor_data.count5V++;
+	  sensor_data.current3V3 += ADC_Convert_3V3_Current();
+	  sensor_data.count3V3++;
+	  HAL_Delay(POLL_TIME);
     /* USER CODE END WHILE */
     /* USER CODE BEGIN 3 */
   }
@@ -598,44 +568,63 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_I2C_AddrCallback(I2C_HandleTypeDef *hi2c, uint8_t TransferDirection, uint16_t AddrMatchCode)
-{
-    if (hi2c->Instance == I2C1)
-    {
-        if (TransferDirection == I2C_DIRECTION_TRANSMIT) // Master wants to write to slave
-        {
-            HAL_I2C_Slave_Receive_IT(hi2c, &rxByte, 1);
-        }
-        else	// Master wants to read from slave
-        {
-            HAL_I2C_Slave_Transmit_IT(hi2c, txBuffer, txLen);
-        }
-    }
-}
-
 void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
-    if (hi2c->Instance == I2C1)
-    {
-        commandReady = 1;
-    }
+	switch (rxData[0])
+	{
+		case 0x01:	// Loaf is requesting status
+			if (voltage12V < 500 || voltage5V < 500 || voltage3V3 < 500)
+			{
+				sensor_data.status = STATUS_ERROR;
+			}
+			else
+			{
+				sensor_data.status = STATUS_OK;
+			}
+			txData[0] = sensor_data.status;
+			txLen = 1;
+			break;
+		case 0x02:	// Loaf is requesting 3V3 current draw
+			sensor_data.current3V3 /= sensor_data.count3V3;
+			txData[0] = (sensor_data.current3V3 >> 0) & 0xFF;
+			txData[1] = (sensor_data.current3V3 >> 8) & 0xFF;
+			txData[2] = (sensor_data.current3V3 >> 16) & 0xFF;
+			txData[3] = (sensor_data.current3V3 >> 24) & 0xFF;
+			txLen = 4;
+			sensor_data.current3V3 = 0;		// Reset values
+			sensor_data.count3V3 = 0;
+			break;
+		case 0x03:	// Loaf is requesting 5V current draw
+			sensor_data.current5V /= sensor_data.count5V;
+			txData[0] = (sensor_data.current5V >> 0) & 0xFF;
+			txData[1] = (sensor_data.current5V >> 8) & 0xFF;
+			txData[2] = (sensor_data.current5V >> 16) & 0xFF;
+			txData[3] = (sensor_data.current5V >> 24) & 0xFF;
+			txLen = 4;
+			sensor_data.current5V = 0;		// Reset values
+			sensor_data.count5V = 0;
+			break;
+		case 0x04:	// Loaf is requesting 12V current draw
+			sensor_data.current12V /= sensor_data.count12V;
+			txData[0] = (sensor_data.current12V >> 0) & 0xFF;
+			txData[1] = (sensor_data.current12V >> 8) & 0xFF;
+			txData[2] = (sensor_data.current12V >> 16) & 0xFF;
+			txData[3] = (sensor_data.current12V >> 24) & 0xFF;
+			txLen = 4;
+			sensor_data.current12V = 0;		// Reset values
+			sensor_data.count12V = 0;
+			break;
+		default:
+			return; // Command unsupported
+	}
+	HAL_I2C_Slave_Transmit_IT(hi2c, txData, txLen);
 }
 
 void HAL_I2C_SlaveTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
-    if (hi2c->Instance == I2C1)
-    {
-        // Do nothing :)
-    }
+	HAL_I2C_Slave_Receive_IT(hi2c, rxData, 1);
 }
 
-void HAL_I2C_ListenCpltCallback(I2C_HandleTypeDef *hi2c)
-{
-    if (hi2c->Instance == I2C1)
-    {
-        HAL_I2C_EnableListen_IT(hi2c);	// Listen again
-    }
-}
 /* USER CODE END 4 */
 
 /**
