@@ -67,9 +67,9 @@ uint8_t rxData[1] = {0x0};
 uint8_t txData[4] = {0x0, 0x0, 0x0, 0x0};
 uint8_t txLen = 0;
 uint8_t commandReady = 0;
-uint16_t voltage3V3 = 0;
-uint16_t voltage5V = 0;
-uint16_t voltage12V = 0;
+int32_t voltage3V3 = 0;
+int32_t voltage5V = 0;
+int32_t voltage12V = 0;
 struct current_data sensor_data;
 /* USER CODE END PV */
 
@@ -86,7 +86,7 @@ static void MX_TIM1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint16_t ADC_to_mA(uint16_t val)
+int32_t ADC_to_mA(int32_t val)
   {
 	  return ((-805*val)/1000) + 3298;
   }
@@ -259,6 +259,7 @@ int main(void)
 	  sensor_data.count3V3++;
 	  HAL_Delay(POLL_TIME);
     /* USER CODE END WHILE */
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -425,7 +426,7 @@ static void MX_I2C1_Init(void)
   hi2c1.Init.OwnAddress2 = 0;
   hi2c1.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
   hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_ENABLE;
   if (HAL_I2C_Init(&hi2c1) != HAL_OK)
   {
     Error_Handler();
@@ -584,7 +585,18 @@ void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
 			txData[0] = sensor_data.status;
 			txLen = 1;
 			break;
+
 		case 0x02:	// Loaf is requesting 3V3 current draw
+			if(sensor_data.count3V3 == 0)
+			{
+				txData[0] = 69;
+				txData[1] = 0;
+				txData[2] = 0;
+				txData[3] = 0;
+				HAL_I2C_Slave_Transmit_IT(hi2c, txData, txLen);
+				return;
+			}
+
 			sensor_data.current3V3 /= sensor_data.count3V3;
 			txData[0] = (sensor_data.current3V3 >> 0) & 0xFF;
 			txData[1] = (sensor_data.current3V3 >> 8) & 0xFF;
@@ -594,7 +606,18 @@ void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
 			sensor_data.current3V3 = 0;		// Reset values
 			sensor_data.count3V3 = 0;
 			break;
+
 		case 0x03:	// Loaf is requesting 5V current draw
+			if(sensor_data.count5V == 0)
+			{
+				txData[0] = 69;
+				txData[1] = 0;
+				txData[2] = 0;
+				txData[3] = 0;
+				HAL_I2C_Slave_Transmit_IT(hi2c, txData, txLen);
+				return;
+			}
+
 			sensor_data.current5V /= sensor_data.count5V;
 			txData[0] = (sensor_data.current5V >> 0) & 0xFF;
 			txData[1] = (sensor_data.current5V >> 8) & 0xFF;
@@ -604,7 +627,18 @@ void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
 			sensor_data.current5V = 0;		// Reset values
 			sensor_data.count5V = 0;
 			break;
+
 		case 0x04:	// Loaf is requesting 12V current draw
+			if(sensor_data.count12V == 0)
+			{
+				txData[0] = 69;
+				txData[1] = 0;
+				txData[2] = 0;
+				txData[3] = 0;
+				HAL_I2C_Slave_Transmit_IT(hi2c, txData, txLen);
+				return;
+			}
+
 			sensor_data.current12V /= sensor_data.count12V;
 			txData[0] = (sensor_data.current12V >> 0) & 0xFF;
 			txData[1] = (sensor_data.current12V >> 8) & 0xFF;
@@ -614,6 +648,7 @@ void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
 			sensor_data.current12V = 0;		// Reset values
 			sensor_data.count12V = 0;
 			break;
+
 		default:
 			return; // Command unsupported
 	}

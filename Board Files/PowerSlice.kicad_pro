@@ -642,7 +642,7 @@
       {
         "filename": "PowerSlice.kicad_sch",
         "name": "PowerSlice",
-        "uuid": "871cf238-4ac7-4d02-abe8-ea643d22c598"
+        "uuid": "00000000-0000-0000-0000-000000000000"
       }
     ],
     "used_designators": "",
@@ -651,7 +651,7 @@
   "sheets": [
     [
       "871cf238-4ac7-4d02-abe8-ea643d22c598",
-      "PowerSlice"
+      "Root"
     ]
   ],
   "text_variables": {},
